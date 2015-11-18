@@ -2,10 +2,10 @@ body {
   margin: 0;
   padding: 0;
   background: #151515 url("../images/bkg.png") 0 0;
-  color: #eaeaea;
+  color: #b5e88f;
   font: 16px;
   line-height: 1.5;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: Courier, Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
 }
 
 /* General & 'Reset' Stuff */
@@ -13,7 +13,7 @@ body {
 .container {
   width: 90%;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 16em;
 }
 
 section {
@@ -36,20 +36,20 @@ li {
 */
 
 header {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(50, 80, 150, 0.3);
   width: 100%;
-  border-bottom: 1px dashed #b5e853;
+  border-bottom: 2px dashed #b5e853;
   padding: 20px 0;
   margin: 0 0 40px 0;
 }
 
 header h1 {
   font-size: 30px;
+  font-weight: bold;
   line-height: 1.5;
   margin: 0 0 0 -40px;
-  font-weight: bold;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  color: #b5e853;
+  color: #b5e8ff;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
                0 0 5px rgba(181, 232, 83, 0.1),
                0 0 10px rgba(181, 232, 83, 0.1);
@@ -60,12 +60,18 @@ header h1 {
 header h1:before {
   content: "./ ";
   font-size: 24px;
+  font-weight: bold;
 }
 
 header h2 {
   font-size: 18px;
   font-weight: 300;
   color: #666;
+  font-weight: bold;
+}
+
+header h2:before {
+  content: "> ";
 }
 
 #downloads .btn {
@@ -97,14 +103,17 @@ h1, h2, h3, h4, h5, h6 {
 
 #main_content h1 {
   font-size: 30px;
+  font-weight: bold;
 }
 
 #main_content h2 {
   font-size: 24px;
+  font-weight: bold;
 }
 
 #main_content h3 {
   font-size: 18px;
+  font-weight: bold;
 }
 
 #main_content h4 {
@@ -124,9 +133,18 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 0 5px 0;
 }
 
+#main_directory td{
+  padding: 10px 10px 10px 10px;
+  font-size: 16px;
+}
+
 dt {
   font-style: italic;
   font-weight: bold;
+}
+
+ul {
+  padding: 0 0 0 0;
 }
 
 ul li {
@@ -164,7 +182,7 @@ pre {
 }
 
 table {
-  width: 100%;
+  width: 60%;
   margin: 0 0 20px 0;
 }
 
@@ -227,8 +245,23 @@ hr {
 */
 
 a {
-  color: #63c0f5;
+  color: #77b334;
   text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #77b384;
+  text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+  text-decoration: underline;
+}
+
+#main_directory a {
+  color: #63c0f5;
+}
+
+#main_directory a:hover {
+  color: #63c0f5;
 }
 
 /* Clearfix */
