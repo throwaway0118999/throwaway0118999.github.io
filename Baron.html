@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html><HTML>
+
+<!--
+O Regresso do Barão!!! HTML
+
+Autores: Álvaro Santos (45537), Mariana Aires (44915)
+
+01234567890123456789012345678901234567890123456789012345678901234567890123456789
+-->
+
+<HEAD>
+<title>Linguagens e Ambientes de Programa&ccedil;&atilde;o (2015/2016) 
+	[Eng.Inf. - DI/FCT/UNL] - 
+3&ordm; projecto pr&aacute;tico (Javascript)</title>
+
+<SCRIPT TYPE="text/javascript" src="Baron0.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" src="Baron.js"></SCRIPT>
+</HEAD>
+
+
+<BODY bgcolor="#99FFCC" onload="onLoad()">
+<p><b>O Regresso do Bar&atilde;o</b> -- &Aacute;lvaro Santos (45537), 
+	Mariana Aires (44915)
+<FORM align="center" NAME="form1">
+	<b>Level:</b> <span id="level_info">1</span> || <b>Lives:</b> 
+	<span id="lives"><img src="http://orig03.deviantart.net/9b11/f/2008/101/c/5/war_skull_16x16__by_xicidal.gif"/><img src="http://orig03.deviantart.net/9b11/f/2008/101/c/5/war_skull_16x16__by_xicidal.gif"/>
+	<img src="http://orig03.deviantart.net/9b11/f/2008/101/c/5/war_skull_16x16__by_xicidal.gif"/></span> || <b>Score:</b> <span id="score">0</span> || 
+	<b>Round time left:</b> <span id="current_time">120</span> seconds
+	<p><CANVAS id="canvas1" width="704" height="480" 
+			   style="border:1px solid #000000;">
+        Your browser doesn't support the HTML5 CANVAS tag.
+    </CANVAS> <br />
+	
+	<INPUT TYPE="button" NAME="restart" VALUE="Restart" SIZE=10 
+		   OnClick="restartGame()">
+	<p><b>Jump to level:</b>
+	<select id="select_level" onChange="skipLevel(value)">
+		<option value=1 select="selected">Level 1</option>
+		
+		<option value=2>Level 2</option>
+		
+		<option value=3>Level 3</option>
+		
+		<option value=4>Level 4</option>
+		
+		<option value=5>Level 5</option>
+		
+		<option value=6>Level 6</option>
+		
+		<option value=7>Level 7</option>
+	</select>
+</FORM>
+</BODY>
+
+</HTML>
+
