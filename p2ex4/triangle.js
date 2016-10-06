@@ -6,11 +6,12 @@ window.onload = function init() {
     if(!gl) { alert("WebGL isn't available"); }
     
     // Three vertices
-    var vertices = [
-        vec2(-1,-1),
-        vec2(0, 1),
-        vec2(1,-1)
-    ];
+    var vertices = [];
+    
+    m = Math.floor(Math.random() * 4 + 3);
+    for(var i = 0; i < m; ++i) {
+        vertices.push(vec2(Math.random()*2 - 1, Math.random()*2 - 1));
+    }
     
     var goal = [];
     
@@ -45,6 +46,7 @@ window.onload = function init() {
     gl.enableVertexAttribArray(vGoal);
     
     mixAmountLoc = gl.getUniformLocation(program, "mixAmount");
+    colorLoc = gl.getUniformLocation(program, "fColor");
     
     render();
 }
@@ -52,16 +54,27 @@ window.onload = function init() {
 var mixAmount = 0;
 var step = 0.01;
 var mixAmountLoc;
+var m;
+var colorLoc;
 
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
+    
+    gl.uniform1f(mixAmountLoc, 0);
+    gl.uniform4fv(colorLoc, vec4(0.8, 0.9, 0.0, 1.0));
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, m);
+    gl.uniform4fv(colorLoc, vec4(0.0, 0.0, 0.0, 1.0));
+    gl.drawArrays(gl.LINE_LOOP, 0, m);
     
     if(mixAmount < 1) {
         mixAmount += step;
     }
     gl.uniform1f(mixAmountLoc, mixAmount);
-    
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.uniform4fv(colorLoc, vec4(0.3, 0.5, 0.8, 1.0));
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, m);
+    gl.uniform4fv(colorLoc, vec4(1.0, 0.3, 0.0, 1.0));
+    gl.drawArrays(gl.LINE_LOOP, 0, m);
     
     requestAnimFrame(render);
 }
