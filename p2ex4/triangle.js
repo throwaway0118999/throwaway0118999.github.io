@@ -66,6 +66,12 @@ function render() {
     gl.uniform4fv(colorLoc, vec4(0.0, 0.0, 0.0, 1.0));
     gl.drawArrays(gl.LINE_LOOP, 0, m);
     
+    gl.uniform1f(mixAmountLoc, 1);
+    gl.uniform4fv(colorLoc, vec4(1.0, 0.5, 0.0, 1.0));
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, m);
+    gl.uniform4fv(colorLoc, vec4(1.0, 0.75, 0.79, 1.0));
+    gl.drawArrays(gl.LINE_LOOP, 0, m);
+    
     if(mixAmount < 1) {
         mixAmount += step;
     }
