@@ -12,11 +12,11 @@ window.onload = function init() {
         vec2(1,-1)
     ];
     
-    var goal = [
-        vec2(-1, 1),
-        vec2(0, -1),
-        vec2(1, 1)
-    ];
+    var goal = [];
+    
+    for(var i = 0; i < vertices.length; ++i) {
+        goal.push(vec2(Math.random()*2 - 1, Math.random()*2 - 1));
+    }
     
     // Configure WebGL
     gl.viewport(0,0,canvas.width, canvas.height);
