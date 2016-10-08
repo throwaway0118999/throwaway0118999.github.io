@@ -20,10 +20,13 @@ void main() {
     float c2 = pow(fPosition.y + displacement.y, 2.0);
     float hypotenuse = sqrt(c1 + c2);
 
-    gl_FragColor.z = hypotenuse;
+    //gl_FragColor.x = 1.0 - (abs(fPosition.x) + abs(fPosition.y))/2.0; //gl_FragColor.y = displacement.x + (fPosition.x + 1.0)/2.0;
+    //gl_FragColor.z = displacement.y + (fPosition.y + 1.0)/2.0;
+    
+    gl_FragColor.x = hypotenuse;
+    gl_FragColor.y = (fPosition.x + 1.0)/2.0;
+    gl_FragColor.z = (fPosition.y + 1.0)/2.0;
 
-    gl_FragColor.x = 0.0;
-    gl_FragColor.y = 0.0;
     gl_FragColor.w = 1.0;
 }
 </script>
