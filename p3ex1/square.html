@@ -4,6 +4,7 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
 varying vec4 fPosition;
+
 void main(){
     fPosition = vPosition;
     gl_Position = vPosition;
@@ -12,10 +13,17 @@ void main(){
 <script id="fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
 varying vec4 fPosition;
+uniform vec2 displacement;
+
 void main() {
-    gl_FragColor.y = (fPosition.x + 1.0)/2.0;
+    float c1 = pow(fPosition.x + displacement.x, 2.0);
+    float c2 = pow(fPosition.y + displacement.y, 2.0);
+    float hypotenuse = sqrt(c1 + c2);
+
+    gl_FragColor.z = hypotenuse;
+
     gl_FragColor.x = 0.0;
-    gl_FragColor.z = (fPosition.y + 1.0)/2.0;
+    gl_FragColor.y = 0.0;
     gl_FragColor.w = 1.0;
 }
 </script>
