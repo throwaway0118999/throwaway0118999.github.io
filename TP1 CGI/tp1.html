@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+varying vec4 fPosition;
+
+void main() {
+    fPosition = vPosition;
+    gl_Position = vPosition;
+}
+</script>
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 fPosition;
+uniform float factor;
+/*
+    fractalType == true -> Mandelbrot fractal
+    fractalType == false -> Julia fractal
+*/
+uniform bool fractalType;
+uniform float scale;
+uniform vec2 center;
+uniform vec2 julia_c;
+
+#define MAX_ITERATIONS 200
+
+int fractal(vec2, vec2);
+vec3 paletize(float, float);
+
+void main() {
+    vec2 z0, c;
+
+    if(fractalType) {
+        z0 = vec2(0.0, 0.0);
+        
+        c.x = center.x + fPosition.x * (1.0/scale);
+        c.y = center.y + fPosition.y * (1.0/scale);
+    } else {
+        z0.x = center.x + fPosition.x * (1.0/scale);
+        z0.y = center.y + fPosition.y * (1.0/scale);
+
+        c = julia_c;
+    }
+    
+    int iter = fractal(z0, c);
+    
+    vec3 color;
+    if(iter == MAX_ITERATIONS) {
+        color = vec3(0.0, 0.0, 0.0);
+    } else if(iter >= 0) {
+        color = paletize(float(iter), factor);
+    }
+    
+    gl_FragColor.xyz = color.xyz;
+    gl_FragColor.w = 1.0;
+}
+
+int fractal(vec2 z0, vec2 c) {
+	vec2 z = z0;
+
+	for(int i = 0; i < MAX_ITERATIONS; ++i) {
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+
+		if(z.x * z.x + z.y * z.y > 4.0) {
+			return i;
+		}
+	}
+
+	return MAX_ITERATIONS;
+}
+
+vec3 paletize(float v, float factor) {
+    float vv = v * factor;
+    return vec3(sin(vv/3.0), cos(vv/6.0), cos(vv/(12.0 + 3.14/4.0)));
+}
+</script>
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="tp1.js"></script>
+</head>
+<body>
+    <title>TP1 de CGI</title>
+    
+    Q: Zoom in || A: Zoom out
+    <br><canvas id="gl-canvas" width="512" height="512">
+        Oops... your browser doesn't support the HTML5 canvas element"
+    </canvas>
+    
+    <div>
+        <select id="fractal-select" size="1">
+            <option value="0">Mandelbrot</option>
+            <option value="1">Julia c = -0.4+0.6i</option>
+            <option value="2">Julia c = 0.285+0i</option>
+            <option value="3">Julia c = 0.285+0.01i</option>
+            <option value="4">Julia c = -0.8+0.156i</option>
+            <option value="5">Julia c = 0.8+0i</option>
+            <option value="6">Julia c = ?</option>
+        </select>
+        
+        Factor: <input id="slider" type="range" min="0.00" max="2.0" step="0.01">
+        
+        <br>
+        
+        c = <input id="real" size="1"> + <input id="imaginary" size="1" type="text"><strong>i</strong>
+        
+        <input id="submit-julia" type="button" value="Use c">
+        
+        <br>
+        
+        <input id="reset-scale" type="button" value="Reset scale">
+        
+        <input id="reset-center" type="button" value="Reset center">
+    </div>
+</body>
+</html>
