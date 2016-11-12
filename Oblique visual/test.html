@@ -27,9 +27,17 @@
     <body>
        <div id="singlepagecontainer">
             <div id="interfacearea">
-                alpha: <input id="alpha" type="range" min="0" max="90" step="0.1" value="45"> [<span id="alpha-display">45</span>&deg;] <input id="alpha-30" type="button" value="30&deg;"> <input id="alpha-45" type="button" value="45&deg;">
+                alpha: <input id="alpha" type="range" min="0" max="90" step="0.1" value="45"> [<span id="alpha-display">45</span>&deg;]
                 <br>
-                l: <input id="l" type="range" min="0" max="1" step="0.05" value="1"> [<span id="l-display">1</span>] <input id="l-1" type="button" value="1 - Cavalier"> <input id="l-0.5" type="button" value="0.5 - Cabinet"> <input id="l-0" type="button" value="0 - Degenerate case, Orthogonal">
+                <input id="alpha-30" type="button" value="&#945; = 30&deg;"> <input id="alpha-45" type="button" value="&#945; = 45&deg;">
+                <br>
+                l: <input id="l" type="range" min="0" max="1" step="0.01" value="1"> [<span id="l-display">1</span>]
+                <br>
+                <input id="l-1" type="button" value="l = 1 (Cavalier)"> <input id="l-0.5" type="button" value="l = 0.5 (Cabinet)"> <input id="l-0" type="button" value="l = 0 (Degenerate case, Orthogonal)">
+                <br>
+                beta: <input id="beta" type="range" min="45" max="90" step="0.1" value="45"> [<span id="beta-display">45</span>&deg;]
+                <br>
+                <input id="beta-45" type="button" value="&#946; = 45&deg; (Cavalier)"> <input id="beta-63.4" type="button" value="&#946; = 63.4&deg; (Cabinet)"> <input id="beta-90" type="button" value="&#946; = 90&deg; (Degenerate case, Orthogonal)">
                 <br>
                 <input id="cube" type="button" value="Cube"> <input id="sphere" type="button" value="Sphere"> <input id="both" type="button" value="Both">
             </div>

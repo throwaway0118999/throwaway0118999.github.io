@@ -7,6 +7,7 @@ var mProjectionLoc;
 
 var alpha = 45;
 var l = 1;
+var beta = 45;
 
 var object = 0;
 
@@ -66,6 +67,7 @@ function drawObject(gl, program) {
 function initHTML() {
     document.getElementById("alpha").value = alpha;
     document.getElementById("l").value = l;
+    document.getElementById("beta").value = beta;
 }
 
 function listeners() {
@@ -76,6 +78,20 @@ function listeners() {
     
     document.getElementById("l").addEventListener("input", function(event) {
         l = event.target.value;
+        document.getElementById("l-display").innerHTML = l;
+        
+        
+        beta = approx((180.0 * Math.atan(1/l))/Math.PI, 1);
+        document.getElementById("beta").value = beta;
+        document.getElementById("beta-display").innerHTML = beta;
+    });
+    
+    document.getElementById("beta").addEventListener("input", function(event) {
+        beta = event.target.value;
+        document.getElementById("beta-display").innerHTML = beta;
+        
+        l = approx(1/Math.tan(radians(beta)), 2);
+        document.getElementById("l").value = l;
         document.getElementById("l-display").innerHTML = l;
     });
     
@@ -91,23 +107,47 @@ function listeners() {
         document.getElementById("alpha").value = alpha;
     });
     
-    document.getElementById("l-1").addEventListener("click", function() {
+    var l1 = function() {
         l = 1;
         document.getElementById("l-display").innerHTML = l;
         document.getElementById("l").value = l;
-    });
-    
-    document.getElementById("l-0.5").addEventListener("click", function() {
+        
+        beta = 45;
+        document.getElementById("beta").value = beta;
+        document.getElementById("beta-display").innerHTML = beta;
+    };
+
+    var l05 = function() {
         l = 0.5;
         document.getElementById("l-display").innerHTML = l;
         document.getElementById("l").value = l;
-    });
+        
+        beta = 63.4;
+        document.getElementById("beta").value = beta;
+        document.getElementById("beta-display").innerHTML = beta;
+    };
     
-    document.getElementById("l-0").addEventListener("click", function() {
+    var l0 = function() {
         l = 0;
         document.getElementById("l-display").innerHTML = l;
         document.getElementById("l").value = l;
-    });
+        
+        beta = 90;
+        document.getElementById("beta").value = beta;
+        document.getElementById("beta-display").innerHTML = beta;
+    };
+    
+    document.getElementById("l-1").addEventListener("click", l1);
+    
+    document.getElementById("l-0.5").addEventListener("click", l05);
+    
+    document.getElementById("l-0").addEventListener("click", l0);
+    
+    document.getElementById("beta-45").addEventListener("click", l1);
+    
+    document.getElementById("beta-63.4").addEventListener("click", l05);
+    
+    document.getElementById("beta-90").addEventListener("click", l0);
     
     document.getElementById("cube").addEventListener("click", function() {
         object = 0;
@@ -130,4 +170,8 @@ function oblique() {
 	result[2][2] = 0;
 	
 	return result;
+}
+
+function approx(n, p) {
+    return Math.round(n*Math.pow(10, p))/Math.pow(10, p);
 }
