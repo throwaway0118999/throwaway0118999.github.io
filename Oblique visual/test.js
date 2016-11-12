@@ -8,6 +8,8 @@ var mProjectionLoc;
 var alpha = 45;
 var l = 1;
 
+var object = 0;
+
 window.onload = function init() {
     // Get the canvas
     canvas = document.getElementById("gl-canvas");
@@ -25,6 +27,7 @@ window.onload = function init() {
     gl.viewport(0,0,canvas.width, canvas.height);
     
     cubeInit(gl);
+    sphereInit(gl);
     gl.useProgram(program);
     
     gl.uniformMatrix4fv(mProjectionLoc, false, flatten(mat4()));
@@ -40,9 +43,24 @@ function render()
     gl.clear(gl.COLOR_BUFFER_BIT);
 	
     gl.uniformMatrix4fv(mProjectionLoc, false, flatten(oblique()));
-    cubeDrawWireFrame(gl, program);
+    drawObject(gl, program);
 
     window.requestAnimationFrame(render);
+}
+
+function drawObject(gl, program) {
+    switch(object) {
+        case 0: //cube
+            cubeDrawWireFrame(gl, program);
+            break;
+        case 1: //sphere
+            sphereDrawWireFrame(gl, program);
+            break;
+        case 2: //both
+            cubeDrawWireFrame(gl, program);
+            sphereDrawWireFrame(gl, program);
+            break;
+    }
 }
 
 function initHTML() {
@@ -61,34 +79,46 @@ function listeners() {
         document.getElementById("l-display").innerHTML = l;
     });
     
-    document.getElementById("alpha-30").addEventListener("click", function(event) {
+    document.getElementById("alpha-30").addEventListener("click", function() {
         alpha = 30;
         document.getElementById("alpha-display").innerHTML = alpha;
         document.getElementById("alpha").value = alpha;
     });
     
-    document.getElementById("alpha-45").addEventListener("click", function(event) {
+    document.getElementById("alpha-45").addEventListener("click", function() {
         alpha = 45;
         document.getElementById("alpha-display").innerHTML = alpha;
         document.getElementById("alpha").value = alpha;
     });
     
-    document.getElementById("l-1").addEventListener("click", function(event) {
+    document.getElementById("l-1").addEventListener("click", function() {
         l = 1;
         document.getElementById("l-display").innerHTML = l;
         document.getElementById("l").value = l;
     });
     
-    document.getElementById("l-0.5").addEventListener("click", function(event) {
+    document.getElementById("l-0.5").addEventListener("click", function() {
         l = 0.5;
         document.getElementById("l-display").innerHTML = l;
         document.getElementById("l").value = l;
     });
     
-    document.getElementById("l-0").addEventListener("click", function(event) {
+    document.getElementById("l-0").addEventListener("click", function() {
         l = 0;
         document.getElementById("l-display").innerHTML = l;
         document.getElementById("l").value = l;
+    });
+    
+    document.getElementById("cube").addEventListener("click", function() {
+        object = 0;
+    });
+    
+    document.getElementById("sphere").addEventListener("click", function() {
+        object = 1;
+    });
+    
+    document.getElementById("both").addEventListener("click", function() {
+        object = 2;
     });
 }
 
