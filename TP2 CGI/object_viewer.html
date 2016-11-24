@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="object_viewer.css">
+        <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        attribute vec3 vNormal;
+        uniform mat4 mProjection;
+        uniform mat4 mModelView;
+        uniform mat4 mNormals;
+        varying vec4 fColor;
+        void main(){
+            gl_Position = mProjection * mModelView * vPosition;
+            fColor = vPosition;            
+        }
+        </script>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 fColor;
+        uniform bool usingWireframe;
+        void main() {
+            if(usingWireframe) {
+                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            } else {
+                gl_FragColor = fColor;
+            }
+        }
+        </script>
+        <script id="vertex-shader-2" type="x-shader/x-vertex">
+        </script>
+        <script id="fragment-shader-2" type="x-shader/x-vertex">
+        </script>
+        <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+        <script type="text/javascript" src="../Common/initShaders.js"></script>
+        <script type="text/javascript" src="../Common/MV.js"></script>
+        <script type="text/javascript" src="../Common/sphere.js"></script>
+        <script type="text/javascript" src="../Common/cube.js"></script>        
+        <script type="text/javascript" src="object_viewer.js"></script>        
+        <script type="text/javascript" src="pyramid.js"></script>   
+        <script type="text/javascript" src="torus.js"></script>
+    </head>
+    <body>
+       <div id="singlepagecontainer">
+            <div id="interfacearea">
+                <p style="padding: 0px 0px 0px 5px">Carregar shaders:</p>
+                <div style="padding: 0px 0px 0px 10px">
+                    Vertex Shader: <input type="file" id="vertex">
+                    <br>Fragment Shader: <input type="file" id="fragment">
+                    <br>Shaders iniciais: <input type="button" id="reset-shaders" value="Usar shaders iniciais">
+                    <br><strong>Note-se:</strong> &Eacute; normal que, ao carregar apenas um shader, surja um
+                    alerta de erro (devido a esse shader n&atilde;o fazer, com o outro shader j&aacute; existente,
+                    um programa de GLSL bem formado). O erro reportado resolve-se a si mesmo ao submeter o shader
+                    em falta que emparelha com o primeiro shader.
+                </div>
+                
+                <p style="padding: 0px 0px 0px 5px">Objecto:</p>
+                <select id="object-select" style="margin: 0px 0px 0px 5px">
+                    <option value="cube" selected="selected">Cubo</option>
+                    <option value="sphere">Esfera</option>
+                    <option value="pyramid">Pir&acirc;mide quadrangular</option>
+                    <option value="torus">Tor&oacute;ide</option>
+                </select>
+                
+                <p style="padding: 0px 0px 0px 5px">Superf&iacute;cie:</p>
+                <form id="surface-form">
+                    <input type="radio" name="surface" value="wireframe" checked="true"> Malha de arame
+                    <br>
+                    <input type="radio" name="surface" value="surface"> Superf&iacute;cies preenchidas
+                    <br>
+                    <input type="radio" name="surface" value="both"> Ambos
+                </form>
+                
+                <p style="padding: 0px 0px 0px 5px">Projec&ccedil;&atilde;o:</p>
+                <form id="projection-form">
+                    <input type="radio" name="projection" value="oblique" checked="true"> Obl&iacute;qua
+                    <input type="radio" name="projection" value="axonometric"> Axonom&eacute;trica
+                    <input type="radio" name="projection" value="perspective"> Perspectiva
+                </form>
+                <br>
+                <input type="button" id="reset-btn" value="Repor valores iniciais" style="margin: 0px 0px 0px 5px">
+                
+                <div id="oblique-div" style="margin: 0px 0px 0px 10px">
+                    <code>&alpha;</code>: <input id="alpha" type="range" min="0" max="90" step="0.01" value="45"> [<span id="alpha-display">45</span>&deg;]
+                    <br>
+                    <input id="alpha-30" type="button" value="&alpha; = 30&deg;"> <input id="alpha-45" type="button" value="&alpha; = 45&deg;">
+                    
+                    <br><br>
+                    <code>l</code>: <input id="l" type="range" min="0" max="1" step="0.01" value="1"> [<span id="l-display">1</span>]
+                    <br>
+                    <input id="l-1" type="button" value="l = 1 (Cavaleira)"> <input id="l-0.5" type="button" value="l = 0.5 (Gabinete)"> <input id="l-0" type="button" value="l = 0 (Ortogonal - caso degenerado)">
+                    
+                    <br><br>
+                    <code>&beta;</code>: <input id="beta" type="range" min="45" max="90" step="0.01" value="45"> [<span id="beta-display">45</span>&deg;]
+                    <br>
+                    <input id="beta-45" type="button" value="&beta; = 45&deg; (Cavaleira)"> <input id="beta-63.4" type="button" value="&beta; = 63.4&deg; (Gabinete)"> <input id="beta-90" type="button" value="&beta; = 90&deg; (Ortogonal - caso degenerado)">
+                    
+                    <br><br>
+                    <strong>Note-se:</strong> <code>l</code> e <code>&beta;</code> s&atilde;o apenas duas maneiras diferentes de espec&iacute;ficar a mesma coisa, estando relacionados pela f&oacute;rmula <code style="border: 1px solid">tg(&beta;) = 1/l</code>.
+                </div>
+                
+                <div id="axonometric-div" style="padding: 0px 0px 0px 10px">
+                    <br>
+                    <input id="isometric_btn" type="button" value="Isometric (A = 30&deg;, B = 30&deg;)">
+                    
+                    <br>
+                    <input id="dimetric_btn" type="button" value="Dimetric (A = 42&deg;, B = 7&deg;)">
+                    
+                    <br>
+                    <input id="trimetric_btn" type="button" value="Trimetric (A = 23&deg;16', B = 12&deg;28')">
+                    
+                    <br><br>
+                    <table style="border: 1px solid">
+                        <tr>
+                            <td>r1</td>
+                            <td id="table-r1">This should not be visible</td>
+                        </tr>
+                        <tr>
+                            <td>r2</td>
+                            <td id="table-r2">This should not be visible</td>
+                        </tr>
+                        <tr>
+                            <td>r3</td>
+                            <td id="table-r3">This should not be visible</td>
+                        </tr>
+                        <tr>
+                            <td>Projec&ccedil;&atilde;o</td>
+                            <td id="table-projection">aproximadamente dim&eacute;trica</td>
+                        </tr>
+                    </table>
+                                        
+                    <br>
+                    <div id="axonometric-warning" style="padding: 0px 0px 0px 5px; border: 1px dashed; visibility: hidden">
+                        N&atilde;o &eacute; poss&iacute;vel mudar a interface desta projec&ccedil;&atilde;o enquanto os &acirc;ngulos mantiverem os valores que est&atilde;o actualmente a tomar.
+                    </div>
+                    
+                    <form id="axonometric-form">
+                        <input type="radio" name="angles-mode" value="projection" checked="true"> &Acirc;ngulos do plano de projec&ccedil;&atilde;o (A e B)
+                        <br>
+                        <input type="radio" name="angles-mode" value="rotation"> &Acirc;ngulos no referencial do mundo (&theta; e &gamma;)
+                    </form>
+                    
+                    <br>
+                    <div id="axo-projection-plane-angles" style="padding: 0px 0px 0px 10px">
+                        <code>A</code> &isin; [0, <span id="A-max">90</span>]: <input id="A" type="range" min="0" max="90" step="0.01" value="42"> [<span id="A-display">42</span>&deg;]
+
+                        <br>
+                        <code>B</code> &isin; [0, <span id="B-max">90</span>]: <input id="B" type="range" min="0" max="90" step="0.01" value="7"> [<span id="B-display">7</span>&deg;]
+                        
+                        <br><br>
+                        <span style="border: 1px solid">
+                            Estes valores de <code>A</code> e <code>B</code> conduzem a:
+                        </span>
+                        <br>
+                        <code>&theta; = <span id="projection_mode_current_theta">-20.2678</span>&deg;</code>
+                        <br>
+                        <code>&gamma; = <span id="projection_mode_current_gamma">19.4204</span>&deg;</code>
+                        
+                        <br><br>
+                        <strong>Note-se:</strong> <code>A</code> e <code>B</code> relacionam-se com <code>&theta;</code> e <code>&gamma;</code> por <code style="border: 1px solid">&theta; = arctg(&radic;(tg(A)/tg(B))) - &pi;/2</code> e <code style="border: 1px solid">&gamma; = arcsen(&radic;(tg(A) * tg(B)))</code>. Facilmente se deduz a partir destas rela&ccedil;&otilde;es que <code style="border: 1px solid">A + B &le; 90</code> tem de se verificar - da&iacute; a altera&ccedil;&atilde;o do dom&iacute;nio de <code>A</code> (respectivamente <code>B</code>) em fun&ccedil;&atilde;o do valor actual de <code>B</code> (respectivamente <code>A</code>).
+                    </div>
+                    
+                    <div id="axo-rotation-angles" style="padding: 0px 0px 0px 10px">
+                        <code>&theta;</code>: <input id="theta" type="range" min="-90" max="0" step="0.01" value="-20.2678"> [<span id="theta-display">-20.2678</span>&deg;]
+
+                        <br>
+                        <code>&gamma;</code>: <input id="gamma" type="range" min="0" max="90" step="0.01" value="19.4204"> [<span id="gamma-display">19.4204</span>&deg;]
+                        
+                        <br><br>
+                        <span style="border: 1px solid">
+                            Estes valores de <code>&theta;</code> e <code>&gamma;</code> conduzem a:
+                        </span>
+                        <br>
+                        <code>A = <span id="rotation_mode_current_A">42</span>&deg;</code>
+                        <br>
+                        <code>B = <span id="rotation_mode_current_B">7</span>&deg;</code>
+                    </div>
+                    
+                    <br>
+                    <div style="padding: 0px 0px 0px 10px">
+                        <strong>Note-se:</strong> Por uma quest&atilde;o de simplicidade da implementa&ccedil;&atilde;o, n&atilde;o se permite que se mude a interface da projec&ccedil;&atilde;o quando os &acirc;ngulos est&atilde;o a tomar certos valores - desta forma, impede-se que se propaguem valores inconsistentes no programa, derivados de c&aacute;lculos interm&eacute;dios que envolvem fun&ccedil;&otilde;es trigonom&eacute;tricas (s&atilde;o estes c&aacute;lculos que levam ao surgimento, por vezes, de factores de escala &quot;<code>NaN</code>&quot; e ao desaparecimento da projec&ccedil;&atilde;o axonom&eacute;trica).
+                    </div>
+                </div>
+                
+                <div id="perspective-div" style="padding: 0px 0px 0px 10px">                    
+                    <code>d</code>: <input id="d" type="range" min="1" max="5" step="0.01" value="2"> [<span id="d-display">2</span>]
+                    <br>
+                    <input id="d-+inf" type="button" value="d = +&infin; (Aproxima&ccedil;&atilde;o da Projec&ccedil;&atilde;o Paralela - caso degenerado)">
+                </div>
+            </div>
+	        <div id="viewarea">
+                <canvas id="gl-canvas">
+                    Oops... your browser doesn't support the HTML5 canvas element"
+                </canvas>      
+            </div>
+        </div>
+    </body>
+</html>
