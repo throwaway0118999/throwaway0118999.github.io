@@ -20,8 +20,15 @@ function updateTimes() {
 		     rc_h + " hora" + (rc_h != "1" ? "s" : "") + ", " +
 		     rc_m + " minuto" + (rc_m != "1" ? "s" : "") + " e " +
    		     rc_s + " segundo" + (rc_s != "1" ? "s" : "");
-	
-	document.getElementById("rc_clock").textContent = rc_str;
+
+	if(Number(rc_d) < 0) {
+		rc_h = "0";
+		rc_m = "0";
+		rc_s = "0";	
+	}
+
+	document.getElementById("rc_clock").textContent = (rc_h == 0 && rc_m == 0 && rc_s == 0) ?
+							escapeHTML("Já foste...") : rc_str;
 
         var new_ia = new Date(target_ia - d);
 	var ia_d = (Number(target_ia.getDate()) - Number(d.getDate()) - 1).toString();
@@ -35,7 +42,15 @@ function updateTimes() {
 		     ia_m + " minuto" + (ia_m != "1" ? "s" : "") + " e " +
    		     ia_s + " segundo" + (ia_s != "1" ? "s" : "");
 	
-	document.getElementById("ia_clock").textContent = ia_str;
+
+	if(Number(ia_d) < 0) {
+		ia_h = "0";
+		ia_m = "0";
+		ia_s = "0";	
+	}
+
+	document.getElementById("ia_clock").textContent = (ia_h == 0 && ia_m == 0 && ia_s == 0) ?
+							escapeHTML("Já foste...") : ia_str;
 
 	var new_cgi = new Date(target_cgi - d);
 	var cgi_d = (Number(target_cgi.getDate()) - Number(d.getDate()) - 1).toString();
@@ -49,8 +64,14 @@ function updateTimes() {
 		     cgi_m + " minuto" + (cgi_m != "1" ? "s" : "") + " e " +
    		     cgi_s + " segundo" + (cgi_s != "1" ? "s" : "");
 	
-	document.getElementById("cgi_clock").textContent = cgi_str;
+	if(Number(cgi_d) < 0) {
+		cgi_h = "0";
+		cgi_m = "0";
+		cgi_s = "0";	
+	}
 
+	document.getElementById("cgi_clock").textContent = (cgi_h == 0 && cgi_m == 0 && cgi_s == 0) ?
+							escapeHTML("Já foste...") : cgi_str;
         var new_mds = new Date(target_mds - d);
 	var mds_d = (Number(target_mds.getDate()) - Number(d.getDate()) - 1).toString();
 	var mds_h = new_mds.getHours();
@@ -63,7 +84,23 @@ function updateTimes() {
 		     mds_m + " minuto" + (mds_m != "1" ? "s" : "") + " e " +
    		     mds_s + " segundo" + (mds_s != "1" ? "s" : "");
 	
-	document.getElementById("mds_clock").textContent = mds_str;
+	if(Number(mds_d) < 0) {
+		mds_h = "0";
+		mds_m = "0";
+		mds_s = "0";	
+	}
+
+	document.getElementById("mds_clock").textContent = (mds_h == 0 && mds_m == 0 && mds_s == 0) ?
+							escapeHTML("Já foste...") : mds_str;
 
 	setTimeout(updateTimes, 1000);
+}
+
+//literally copypasted, fuck javascript and its bullshit assbackwards philosophy
+function escapeHTML (str)
+{
+    var div = document.createElement('div');
+    var text = document.createTextNode(str);
+    div.appendChild(text);
+    return div.innerHTML;
 }
