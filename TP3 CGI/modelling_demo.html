@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+<script id="vertex-shader-2" type="x-shader/x-vertex">
+const vec4 lightPosition = vec4(4.0, 0.0, 10.0, 1.0);    // in WC
+
+attribute vec4 vPosition;   // vertex position in modelling coordinates
+attribute vec4 vNormal;     // vertex normal in modelling coordinates
+
+uniform mat4 mView;         // view transformation matrix (for points)
+uniform mat4 mViewVectors;  // view transformation matrix (for vectors)
+uniform mat4 mModelView;    // model-view transformation (for points)
+uniform mat4 mNormals;      // model-view transformation (for vectors/normals)
+
+uniform mat4 mProjection;   // projection matrix
+
+varying vec3 fNormal;       // normal vector in camera space (to be interpolated)
+varying vec3 fLight;
+varying vec3 fViewer;
+
+void main(){
+    // compute position in camera frame
+    vec3 posC = (mModelView * vPosition).xyz;
+    
+    // compute normal in camera frame
+    fNormal = (mNormals * vNormal).xyz;
+
+    // compute light vector in camera frame
+    if(lightPosition.w == 0.0) 
+        fLight = normalize((mViewVectors * lightPosition).xyz);
+    else 
+        fLight = normalize((mView*lightPosition).xyz - posC);
+    
+    // Compute the view vector
+    // fViewer = -fPosition; // Perspective projection
+    fViewer = vec3(0,0,1); // Parallel projection only
+
+    // Compute vertex position in clip coordinates (as usual)
+    gl_Position = mProjection * mModelView * vPosition;
+
+    // make correction for left handed system of clip space
+    //gl_Position.z = -gl_Position.z;
+}
+</script>
+<script id="fragment-shader-2" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec3 fPosition;
+varying vec3 fNormal;
+
+uniform vec3 color;
+const float shininess = 60.0;
+
+const vec3 lightAmb = vec3(0.2, 0.2, 0.2);
+const vec3 lightDif = vec3(0.5, 0.5, 0.5);
+const vec3 lightSpe = vec3(1.0, 1.0, 1.0);
+
+vec3 ambientColor = lightAmb * color;
+vec3 diffuseColor = lightDif * color;
+vec3 specularColor = lightSpe * vec3(1.0, 1.0, 1.0);
+
+varying vec3 fLight;
+varying vec3 fViewer;
+
+void main() {
+
+    vec3 L = normalize(fLight);
+    vec3 V = normalize(fViewer);
+    vec3 N = normalize(fNormal);
+   
+    // Compute the halfway vector for Phong-Blinn model
+    vec3 H = normalize(L+V);
+
+    // compute diffuse reflection, don't let the vertex be illuminated from behind...
+    float diffuseFactor = max( dot(L,N), 0.0 );
+    vec3 diffuse = diffuseFactor * diffuseColor;
+
+    // compute specular reflection
+    float specularFactor = pow(max(dot(N,H), 0.0), shininess);
+    vec3 specular = specularFactor * specularColor;
+
+    // specular reflection should be 0 if normal is pointing away from light source
+    if( dot(L,N) < 0.0 ) {
+        specular = vec3(0.0, 0.0, 0.0);
+    }
+
+    // add all 3 components from the illumination model (ambient, diffuse and specular)
+    gl_FragColor = vec4(ambientColor + diffuse + specular, 1.0);
+}
+</script>
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="cube.js"></script>
+<script type="text/javascript" src="sphere.js"></script>
+<script type="text/javascript" src="cylinder.js"></script>
+<script type="text/javascript" src="modelling_demo.js"></script>
+<style media="screen" type="text/css">
+table, td {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+    display: inline-block;
+}
+</style>
+</head>
+<body>
+  <title>TP3 CGI</title>
+    <h1>TP3 de CGI</h1>
+    <div id="container">
+            <canvas id="gl-canvas" width="512" height="512"> Oops... your browser doesn't support the HTML5 canvas element"
+            </canvas>
+    </div>
+    
+    <div style="display: inline-block">
+        <table>
+            <tr>
+                <td>
+                    <code>&uarr;</code> - Mover carro para tr&aacute;s
+                </td>
+                <td>
+                    <code>&darr;</code> - Mover carro para a frente
+                </td>
+                <td>
+                    <code>&larr;</code> - Mover carro para a esquerda
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <code>&rarr;</code> - Mover carro para a direita
+                </td>
+                <td>
+                    <code>Q</code> - Rodar base (&#8634;)
+                </td>
+                <td>
+                    <code>W</code> - Rodar base (&#8635;)
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <code>Z</code> - Rodar bra&ccedil;o superior (&#8634;)
+                </td> 
+                <td>
+                    <code>X</code> - Rodar bra&ccedil;o superior (&#8635;)
+                </td>
+                <td>
+                    <code>A</code> - Rodar bra&ccedil;o inferior (&#8634;)
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <code>S</code> - Rodar bra&ccedil;o inferior (&#8635;)
+                </td>
+                <td>
+                    <code>O</code> - Fechar garra
+                </td>
+                <td>
+                    <code>P</code> - Abrir garra
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <code>K</code> - Rodar punho (&#8634;)
+                </td>
+                <td>
+                    <code>L</code> - Rodar punho (&#8635;)
+                </td>
+                <td style="text-align: center">
+                    <!--Para fazer o rebordo aparecer todo carregado-->
+                    ---
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <br>
+    <code>&theta;</code>: <input id="theta" type="range" min="-90" max="0" step="0.01" value="-20.27"> [<span id="theta-display">-20.27</span>&deg;]
+
+    <br>
+    <code>&gamma;</code>: <input id="gamma" type="range" min="0" max="90" step="0.01" value="19.42"> [<span id="gamma-display">19.42</span>&deg;]
+</body>
+</html>
