@@ -1,5 +1,5 @@
 window.onload = function() {
-	for (int i = 0; i<100; i++){
+	for (i = 0; i<100; i++){
 		var data = {};
 
 		data.title = "Title";
